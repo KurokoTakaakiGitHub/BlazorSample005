@@ -1,0 +1,7 @@
+/.vs
+/BlazorSample005/Client/bin
+/BlazorSample005/Client/obj
+/BlazorSample005/Server/bin
+/BlazorSample005/Server/obj
+/BlazorSample005/Shared/bin
+/BlazorSample005/Shared/obj
