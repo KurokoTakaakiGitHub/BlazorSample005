@@ -1,0 +1,83 @@
+﻿@page "/contactV2"
+@using System.ComponentModel.DataAnnotations;
+<h3>お問い合わせフォーム</h3>
+@*Update *@
+<EditForm EditContext="@editContext" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label>名前</label>
+        <InputText class="form-control" @bind-Value="@model.Name" />
+    </div>
+    <div class="form-group">
+        <label>メールアドレス</label>
+        <InputText class="form-control" @bind-Value="@model.Email" type="email" />
+    </div>
+    <div class="form-group">
+        <label>内容</label>
+        <InputTextArea class="form-control" @bind-Value="@model.Content" />
+    </div>
+    @*Update*@
+    <button type="submit" class="btn btn-primary" disabled="@formInvalid">送信</button>
+</EditForm>
+
+<p style="font-size: 20px;margin-top: 20px;">
+    @resultMessage
+</p>
+
+@*---(3) 以下を追加---*@
+@if (!string.IsNullOrEmpty(resultMessage))
+{
+<p>名前:@model.Name</p>
+<p>メールアドレス:@model.Email</p>
+<p>内容:@model.Content</p>
+}
+
+@code
+{
+    private ContactFormModel model = new ContactFormModel();
+    private string resultMessage;
+
+    public class ContactFormModel
+    {
+        [Required
+            (ErrorMessage = "名前は⼊⼒必須です 。")]
+        [MinLength
+            (3, ErrorMessage = "名前は3⽂字以上⼊⼒してください 。")]
+        [MaxLength
+            (10, ErrorMessage = "名前は10⽂字以下にしてください 。")]
+        public string Name { get; set; }
+
+        [Required
+            (ErrorMessage = "メールアドレスは⼊⼒必須です 。")]
+        public string Email { get; set; }
+
+        [Required(ErrorMessage = "内容は⼊⼒必須です 。")]
+        public string Content { get; set; }
+    }
+
+    private void OnValidSubmit()
+    {
+        resultMessage = "お問い合わせありがとうございました！";
+    }
+
+    private bool formInvalid = true;
+    private EditContext editContext;
+
+    protected override void OnInitialized()
+    {
+        editContext = new EditContext(model);
+            editContext.OnFieldChanged += OnFieldChanged;
+        }
+
+    private void OnFieldChanged(object sender, FieldChangedEventArgs e)
+    {
+        formInvalid = !editContext.Validate();
+
+        if (formInvalid)
+        {
+            resultMessage = string.Empty;
+        }
+    }
+}
+
